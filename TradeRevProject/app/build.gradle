@@ -15,6 +15,10 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // Unsplash Variables
+        buildConfigField "String", "UNSPLASH_ACCESS_KEY", "\"DiLo5CvU_-BBePh9WjdXe8h1L4UUEApQOKHFkWNFXKs\""
+        buildConfigField "String", "UNSPLASH_API_URL", "\"https://api.unsplash.com\""
     }
 
     buildFeatures {
@@ -24,12 +28,10 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            buildConfigField "String", "API_URL", "\"https://api.github.com\""
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
         debug {
             minifyEnabled false
-            buildConfigField "String", "API_URL", "\"https://api.github.com\""
             debuggable true
         }
     }
@@ -82,6 +84,7 @@ dependencies {
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     // RxJava
     implementation( "io.reactivex.rxjava2:rxandroid:$rx_java_version")

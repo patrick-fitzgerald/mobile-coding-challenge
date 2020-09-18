@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">AndroidStarterProject</string>
+    <string name="app_name">TradeRev</string>
     <string name="home_title">Home</string>
-    <string name="repo_list">GitHub Repo\'s</string>
 </resources>

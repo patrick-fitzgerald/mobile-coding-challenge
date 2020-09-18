@@ -6,7 +6,7 @@
 
         <variable
             name="gitHubRepo"
-            type="com.example.data.response.GitHubRepo" />
+            type="com.example.data.response.UnsplashPhoto" />
 
     </data>
 

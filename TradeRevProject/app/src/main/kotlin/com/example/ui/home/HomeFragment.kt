@@ -20,7 +20,7 @@ class HomeFragment : BaseFragment() {
     private val homeViewModel: HomeViewModel by viewModel()
 
     private lateinit var viewLayoutManager: RecyclerView.LayoutManager
-    private lateinit var viewAdapter: GitHubRepoAdapter
+    private lateinit var viewAdapter: UnsplashPhotoAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,37 +32,42 @@ class HomeFragment : BaseFragment() {
         viewBinding.lifecycleOwner = this
 
         viewLayoutManager = LinearLayoutManager(context)
-        viewAdapter = GitHubRepoAdapter()
+        viewAdapter = UnsplashPhotoAdapter()
 
-        viewBinding.githubRepoList.apply {
+        viewBinding.unsplashPhotoList.apply {
             setHasFixedSize(true)
             layoutManager = viewLayoutManager
             adapter = viewAdapter
         }
 
-        homeViewModel.getGitHubReposRequest()
+        homeViewModel.getUnsplashPhotosRequest()
 
         return viewBinding.root
     }
 
     override fun onStart() {
         super.onStart()
+        subscribeToContextEvents()
 
-        // github repos update
-        homeViewModel.gitHubRepos.observe(
+        // unsplash photos update
+        homeViewModel.unsplashPhotos.observe(
             viewLifecycleOwner,
-            Observer { gitHubRepos ->
-                gitHubRepos?.let {
+            Observer { unsplashPhotos ->
+                unsplashPhotos?.let {
                     viewAdapter.addHeaderAndSubmitList(it)
                 }
             }
         )
 
-        // click events
+
+    }
+
+    private fun subscribeToContextEvents(){
+        // context events
         homeViewModel.contextEventBus.subscribe { contextEvent ->
             context?.let {
                 when (contextEvent) {
-                    HomeViewModel.ContextEvent.GET_REPOS_BUTTON_CLICKED -> Timber.d("HomeFragment - getRepoButtonClicked")
+                    HomeViewModel.ContextEvent.SCROLL_NEXT_PAGE_EVENT -> Timber.d("HomeFragment - scroll next page event")
                     else -> Unit
                 }
             }
