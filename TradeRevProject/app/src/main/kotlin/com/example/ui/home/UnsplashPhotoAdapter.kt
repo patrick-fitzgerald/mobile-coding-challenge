@@ -48,7 +48,7 @@ class UnsplashPhotoAdapter :
     class ItemViewHolder private constructor(private val binding: ListItemUnsplashPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: UnsplashPhoto) {
-            binding.repoName.text = item.id
+            binding.unsplashPhoto = item
             binding.executePendingBindings()
         }
 
