@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/large_padding"
-        tools:context="com.example.ui.home.SplashFragment"
+        tools:context="com.example.ui.photo.PhotoFragment"
         tools:showIn="@layout/activity_main">
 
 
@@ -31,7 +31,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.ui.splash.SplashViewModel" />
+            type="com.example.ui.photo.PhotoViewModel" />
     </data>
 
 

@@ -2,12 +2,10 @@ package com.example.ui.home
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.R
 import com.example.data.response.UnsplashPhoto
 import com.example.databinding.ListItemUnsplashPhotoBinding
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +13,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class UnsplashPhotoAdapter :
+class PhotoClickListener(val clickListener: (unsplashPhoto: UnsplashPhoto) -> Unit) {
+    fun onClick(unsplashPhoto: UnsplashPhoto) = clickListener(unsplashPhoto)
+}
+
+class PhotoAdapter(private val clickListener: PhotoClickListener) :
     ListAdapter<DataItem, RecyclerView.ViewHolder>(UnsplashPhotoDiffCallback()) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
@@ -36,7 +38,7 @@ class UnsplashPhotoAdapter :
         when (holder) {
             is ItemViewHolder -> {
                 val unsplashPhotoItem = getItem(position) as DataItem.UnsplashPhotoItem
-                holder.bind(unsplashPhotoItem.unsplashPhoto)
+                holder.bind(unsplashPhotoItem.unsplashPhoto, clickListener)
             }
         }
     }
@@ -47,8 +49,9 @@ class UnsplashPhotoAdapter :
 
     class ItemViewHolder private constructor(private val binding: ListItemUnsplashPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: UnsplashPhoto) {
+        fun bind(item: UnsplashPhoto, clickListener: PhotoClickListener) {
             binding.unsplashPhoto = item
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
 

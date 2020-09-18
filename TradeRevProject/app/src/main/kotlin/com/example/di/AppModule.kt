@@ -5,7 +5,7 @@ import com.example.api.AuthInterceptor
 import com.example.api.UnsplashApi
 import com.example.repository.UnsplashRepository
 import com.example.ui.home.HomeViewModel
-import com.example.ui.splash.SplashViewModel
+import com.example.ui.photo.PhotoViewModel
 import com.example.util.PreferenceHelper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val viewModelModule = module {
 
-    single { SplashViewModel() }
+    single { PhotoViewModel() }
     single { HomeViewModel(get()) }
 }
 

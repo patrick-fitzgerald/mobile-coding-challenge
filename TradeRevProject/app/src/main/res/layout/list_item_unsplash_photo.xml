@@ -7,12 +7,18 @@
             name="unsplashPhoto"
             type="com.example.data.response.UnsplashPhoto" />
 
+        <variable
+            name="clickListener"
+            type="com.example.ui.home.PhotoClickListener" />
+
     </data>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> clickListener.onClick(unsplashPhoto)}"
+        >
 
 
         <ImageView

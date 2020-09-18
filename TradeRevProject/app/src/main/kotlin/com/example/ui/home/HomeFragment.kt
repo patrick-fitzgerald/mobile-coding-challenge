@@ -5,8 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.R
+import com.example.data.response.UnsplashPhoto
 import com.example.databinding.FragmentHomeBinding
 import com.example.ui.base.BaseFragment
 import com.example.util.autoCleared
@@ -20,7 +24,13 @@ class HomeFragment : BaseFragment() {
     private val homeViewModel: HomeViewModel by viewModel()
 
     private lateinit var viewLayoutManager: RecyclerView.LayoutManager
-    private lateinit var viewAdapter: UnsplashPhotoAdapter
+    private lateinit var viewAdapter: PhotoAdapter
+
+
+    private val photoClickListener = PhotoClickListener { unsplashPhoto: UnsplashPhoto ->
+        Timber.d("photoClickListener: unsplashPhoto: $unsplashPhoto clicked")
+        navigateToPhotoFragment()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,7 +42,7 @@ class HomeFragment : BaseFragment() {
         viewBinding.lifecycleOwner = this
 
         viewLayoutManager = LinearLayoutManager(context)
-        viewAdapter = UnsplashPhotoAdapter()
+        viewAdapter = PhotoAdapter(photoClickListener)
 
         viewBinding.unsplashPhotoList.apply {
             setHasFixedSize(true)
@@ -62,7 +72,7 @@ class HomeFragment : BaseFragment() {
 
     }
 
-    private fun subscribeToContextEvents(){
+    private fun subscribeToContextEvents() {
         // context events
         homeViewModel.contextEventBus.subscribe { contextEvent ->
             context?.let {
@@ -72,5 +82,18 @@ class HomeFragment : BaseFragment() {
                 }
             }
         }.addTo(compositeDisposable)
+    }
+
+
+    private fun navigateToPhotoFragment() {
+        Timber.d("navigateToPhotoFragment")
+        findNavController().navigate(
+            R.id.action_homeFragment_to_photoFragment,
+            null,
+            NavOptions.Builder().setPopUpTo(
+                R.id.homeFragment,
+                true
+            ).build()
+        )
     }
 }
