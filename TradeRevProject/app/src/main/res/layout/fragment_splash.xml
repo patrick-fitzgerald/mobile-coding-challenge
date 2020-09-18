@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/large_padding"
+        tools:context="com.example.ui.home.SplashFragment"
+        tools:showIn="@layout/activity_main">
+
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="@dimen/splash_progress_bar"
+            android:layout_height="@dimen/splash_progress_bar"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.ui.splash.SplashViewModel" />
+    </data>
+
+
+</layout>
