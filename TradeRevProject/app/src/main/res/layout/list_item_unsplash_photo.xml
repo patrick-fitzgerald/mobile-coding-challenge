@@ -17,8 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> clickListener.onClick(unsplashPhoto)}"
-        >
+        android:onClick="@{() -> clickListener.onClick(unsplashPhoto)}">
 
 
         <ImageView
@@ -27,6 +26,7 @@
             android:layout_height="match_parent"
             app:image_url="@{unsplashPhoto.thumbnailUrl()}"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

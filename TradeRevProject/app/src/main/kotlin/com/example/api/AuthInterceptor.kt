@@ -11,7 +11,6 @@ class AuthInterceptor : Interceptor {
         const val CLIENT_ID_KEY = "Client-ID"
     }
 
-
     override fun intercept(chain: Interceptor.Chain): Response {
 
         val requestBuilder = chain.request().newBuilder()

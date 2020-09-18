@@ -1,7 +1,7 @@
 package com.example.repository
 
-import com.example.api.UnsplashApi
 import com.example.api.Resource
+import com.example.api.UnsplashApi
 import com.example.data.response.UnsplashPhoto
 import timber.log.Timber
 

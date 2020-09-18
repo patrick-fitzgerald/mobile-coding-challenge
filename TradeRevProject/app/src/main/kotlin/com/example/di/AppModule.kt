@@ -15,8 +15,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val viewModelModule = module {
 
-    single { PhotoViewModel() }
-    single { HomeViewModel(get()) }
+    single { PhotoViewModel(get()) }
+    single { HomeViewModel() }
 }
 
 val networkModule = module {

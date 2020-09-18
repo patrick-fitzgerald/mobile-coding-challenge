@@ -10,17 +10,21 @@ data class UnsplashPhoto(
 
     val urls: UnsplashPhotoUrl? = null
 
-){
+) {
     fun thumbnailUrl(): String {
         urls?.let {
             return it.thumb
         }
         return ""
     }
+
+    fun fullUrl(): String {
+        urls?.let {
+            return it.thumb
+        }
+        return ""
+    }
 }
-
-
-
 
 data class UnsplashPhotoUrl(
     val full: String = "",

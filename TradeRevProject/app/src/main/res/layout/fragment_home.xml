@@ -18,7 +18,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visible_if="@{viewModel.isLoading}"
+            app:visible_if="@{photoViewModel.isLoading}"
+            tools:visibility="gone"
 
             />
 
@@ -30,8 +31,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visible_if="@{!viewModel.isLoading}"
-            tools:listitem="@layout/list_item_unsplash_photo" />
+            tools:listitem="@layout/list_item_unsplash_photo"
+            tools:visibility="visible"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -39,8 +41,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="com.example.ui.home.HomeViewModel" />
+            name="photoViewModel"
+            type="com.example.ui.photo.PhotoViewModel" />
     </data>
 
 

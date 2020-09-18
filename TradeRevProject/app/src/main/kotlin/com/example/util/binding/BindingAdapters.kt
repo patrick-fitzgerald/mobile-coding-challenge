@@ -14,7 +14,6 @@ object BindingAdapters {
         view.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-
     @JvmStatic
     @BindingAdapter("image_url")
     fun setImageUrl(imageView: ImageView, imageUrl: String) {
@@ -22,5 +21,4 @@ object BindingAdapters {
             Picasso.get().load(imageUrl).into(imageView)
         }
     }
-
 }

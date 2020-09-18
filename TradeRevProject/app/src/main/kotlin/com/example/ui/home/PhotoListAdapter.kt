@@ -17,12 +17,12 @@ class PhotoClickListener(val clickListener: (unsplashPhoto: UnsplashPhoto) -> Un
     fun onClick(unsplashPhoto: UnsplashPhoto) = clickListener(unsplashPhoto)
 }
 
-class PhotoAdapter(private val clickListener: PhotoClickListener) :
+class PhotoListAdapter(private val clickListener: PhotoClickListener) :
     ListAdapter<DataItem, RecyclerView.ViewHolder>(UnsplashPhotoDiffCallback()) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
 
-    fun addHeaderAndSubmitList(list: List<UnsplashPhoto>?) {
+    fun submitPhotoList(list: List<UnsplashPhoto>?) {
         adapterScope.launch {
             val items = when (list) {
                 null -> emptyList()

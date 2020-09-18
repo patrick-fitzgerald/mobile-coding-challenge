@@ -13,8 +13,10 @@ import com.example.R
 import com.example.data.response.UnsplashPhoto
 import com.example.databinding.FragmentHomeBinding
 import com.example.ui.base.BaseFragment
+import com.example.ui.photo.PhotoViewModel
 import com.example.util.autoCleared
 import io.reactivex.rxkotlin.addTo
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -22,10 +24,10 @@ class HomeFragment : BaseFragment() {
 
     private var viewBinding by autoCleared<FragmentHomeBinding>()
     private val homeViewModel: HomeViewModel by viewModel()
+    private val photoViewModel: PhotoViewModel by sharedViewModel()
 
     private lateinit var viewLayoutManager: RecyclerView.LayoutManager
-    private lateinit var viewAdapter: PhotoAdapter
-
+    private lateinit var viewListAdapter: PhotoListAdapter
 
     private val photoClickListener = PhotoClickListener { unsplashPhoto: UnsplashPhoto ->
         Timber.d("photoClickListener: unsplashPhoto: $unsplashPhoto clicked")
@@ -38,19 +40,19 @@ class HomeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewBinding = FragmentHomeBinding.inflate(inflater, container, false)
-        viewBinding.viewModel = homeViewModel
+        viewBinding.photoViewModel = photoViewModel
         viewBinding.lifecycleOwner = this
 
         viewLayoutManager = LinearLayoutManager(context)
-        viewAdapter = PhotoAdapter(photoClickListener)
+        viewListAdapter = PhotoListAdapter(photoClickListener)
 
         viewBinding.unsplashPhotoList.apply {
             setHasFixedSize(true)
             layoutManager = viewLayoutManager
-            adapter = viewAdapter
+            adapter = viewListAdapter
         }
 
-        homeViewModel.getUnsplashPhotosRequest()
+        photoViewModel.getUnsplashPhotosRequest()
 
         return viewBinding.root
     }
@@ -60,16 +62,14 @@ class HomeFragment : BaseFragment() {
         subscribeToContextEvents()
 
         // unsplash photos update
-        homeViewModel.unsplashPhotos.observe(
+        photoViewModel.unsplashPhotos.observe(
             viewLifecycleOwner,
             Observer { unsplashPhotos ->
                 unsplashPhotos?.let {
-                    viewAdapter.addHeaderAndSubmitList(it)
+                    viewListAdapter.submitPhotoList(it)
                 }
             }
         )
-
-
     }
 
     private fun subscribeToContextEvents() {
@@ -83,7 +83,6 @@ class HomeFragment : BaseFragment() {
             }
         }.addTo(compositeDisposable)
     }
-
 
     private fun navigateToPhotoFragment() {
         Timber.d("navigateToPhotoFragment")
