@@ -15,6 +15,11 @@ class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseV
 
     val isLoading = MutableLiveData<Boolean>().default(true)
     val unsplashPhotos = MutableLiveData<List<UnsplashPhoto>>()
+    val selectedPhoto = MutableLiveData<UnsplashPhoto>()
+
+    fun selectedPosition(): Int? {
+        return unsplashPhotos.value?.indexOf(selectedPhoto.value)
+    }
 
     // Sample HTTP request
     fun getUnsplashPhotosRequest() {

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +29,7 @@ class HomeFragment : BaseFragment() {
     private lateinit var viewListAdapter: PhotoListAdapter
 
     private val photoClickListener = PhotoClickListener { unsplashPhoto: UnsplashPhoto ->
-        Timber.d("photoClickListener: unsplashPhoto: $unsplashPhoto clicked")
+        photoViewModel.selectedPhoto.value = unsplashPhoto
         navigateToPhotoFragment()
     }
 
@@ -86,13 +85,6 @@ class HomeFragment : BaseFragment() {
 
     private fun navigateToPhotoFragment() {
         Timber.d("navigateToPhotoFragment")
-        findNavController().navigate(
-            R.id.action_homeFragment_to_photoFragment,
-            null,
-            NavOptions.Builder().setPopUpTo(
-                R.id.homeFragment,
-                true
-            ).build()
-        )
+        findNavController().navigate(R.id.action_homeFragment_to_photoFragment)
     }
 }

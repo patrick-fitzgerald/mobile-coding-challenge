@@ -6,7 +6,6 @@ import com.example.api.UnsplashApi
 import com.example.repository.UnsplashRepository
 import com.example.ui.home.HomeViewModel
 import com.example.ui.photo.PhotoViewModel
-import com.example.util.PreferenceHelper
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -47,8 +46,4 @@ val repositoryModule = module {
     single { UnsplashRepository(get()) }
 }
 
-val prefsModule = module {
-    single { PreferenceHelper(get()) }
-}
-
-val appModules = listOf(viewModelModule, networkModule, repositoryModule, prefsModule)
+val appModules = listOf(viewModelModule, networkModule, repositoryModule)

@@ -13,9 +13,7 @@
 
         <action
             android:id="@+id/action_homeFragment_to_photoFragment"
-            app:destination="@id/photoFragment"
-            app:popUpTo="@id/photoFragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/photoFragment" />
 
     </fragment>
 
