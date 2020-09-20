@@ -28,10 +28,13 @@ class HomeFragment : BaseFragment() {
     private lateinit var viewLayoutManager: RecyclerView.LayoutManager
     private lateinit var viewListAdapter: PhotoListAdapter
 
+    private var pageNumber: Int = 1
+
     private val photoClickListener = PhotoClickListener { unsplashPhoto: UnsplashPhoto ->
         photoViewModel.selectedPhoto.value = unsplashPhoto
         navigateToPhotoFragment()
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,23 +52,54 @@ class HomeFragment : BaseFragment() {
             setHasFixedSize(true)
             layoutManager = viewLayoutManager
             adapter = viewListAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+
+                    layoutManager?.let {
+                        val totalItemCount = it.itemCount
+                        val visibleItemCount = it.childCount
+
+                        val lastVisibleItemPosition = it.findLastVisibleItemPosition()
+
+                        if (photoViewModel.isLoading.value != true && lastVisibleItemPosition + 1 >= totalItemCount) {
+                            Timber.d("makeRequest - pageNumber: $pageNumber")
+                            pageNumber += 1
+                            photoViewModel.getUnsplashPhotosRequest(pageNumber)
+                        }
+                    }
+                }
+            })
         }
 
-        photoViewModel.getUnsplashPhotosRequest()
+
+        // Make initial request
+        photoViewModel.getUnsplashPhotosRequest(pageNumber)
 
         return viewBinding.root
     }
+
+    var items: List<DataItem> = emptyList()
 
     override fun onStart() {
         super.onStart()
         subscribeToContextEvents()
 
         // unsplash photos update
-        photoViewModel.unsplashPhotos.observe(
+        photoViewModel.photoListData.observe(
             viewLifecycleOwner,
-            Observer { unsplashPhotos ->
-                unsplashPhotos?.let {
-                    viewListAdapter.submitPhotoList(it)
+            Observer { photoListData ->
+                photoListData?.let {
+                    if (it.unsplashPhotos != null) {
+                        Timber.d("submitPhotoList isLoading: false")
+                        viewListAdapter.submitPhotoList(it.unsplashPhotos)
+                    }
+//                    if (it.isLoading != null) {
+//                        Timber.d("submitPhotoList isLoading: true")
+//                        viewListAdapter.submitPhotoList(it.unsplashPhotos, true)
+//                    }
                 }
             }
         )

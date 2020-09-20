@@ -7,5 +7,5 @@ import retrofit2.http.Query
 interface UnsplashApi {
 
     @GET("photos")
-    suspend fun photos(@Query("page") page: String): List<UnsplashPhoto>
+    suspend fun photos(@Query("page") pageNumber: String): List<UnsplashPhoto>
 }

@@ -9,9 +9,9 @@ class UnsplashRepository constructor(
     private val unsplashApi: UnsplashApi
 ) {
 
-    suspend fun getPhotos(): Resource<List<UnsplashPhoto>> {
+    suspend fun getPhotos(pageNumber: Int): Resource<List<UnsplashPhoto>> {
         return try {
-            val response = unsplashApi.photos("1") // TODO setup pagination
+            val response = unsplashApi.photos(pageNumber = pageNumber.toString()) // TODO setup pagination
             Timber.d("getPhotos response=$response")
             Resource.success(data = response)
         } catch (exception: Exception) {

@@ -38,5 +38,5 @@ class PhotoFragment : BaseFragment() {
 
         return viewBinding.root
     }
-    
+
 }
