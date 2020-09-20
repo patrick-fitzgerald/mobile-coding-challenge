@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.R
@@ -15,6 +13,7 @@ import com.example.data.response.UnsplashPhoto
 import com.example.databinding.FragmentHomeBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.photo.PhotoViewModel
+import com.example.util.Constants.Companion.UNSPLASH_PHOTOS_FIRST_PAGE
 import com.example.util.autoCleared
 import io.reactivex.rxkotlin.addTo
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -31,7 +30,6 @@ class HomeFragment : BaseFragment() {
     private lateinit var viewLayoutManager: RecyclerView.LayoutManager
     private lateinit var viewListAdapter: PhotoListAdapter
 
-    private var pageNumber: Int = 1
 
     private val photoClickListener = PhotoClickListener { unsplashPhoto: UnsplashPhoto ->
         photoViewModel.selectedPhoto.value = unsplashPhoto
@@ -42,7 +40,7 @@ class HomeFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate")
         // Make initial request
-        photoViewModel.getUnsplashPhotosRequest(pageNumber)
+        photoViewModel.getUnsplashPhotosRequest(UNSPLASH_PHOTOS_FIRST_PAGE)
     }
 
 
@@ -66,35 +64,20 @@ class HomeFragment : BaseFragment() {
             setHasFixedSize(true)
             layoutManager = viewLayoutManager
             adapter = viewListAdapter
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-
-                    val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager?
-
-                    layoutManager?.let {
-                        val totalItemCount = it.itemCount
-                        Timber.d("totalItemCount ${totalItemCount} ")
-                        val lastVisibleItemPositions = it.findLastCompletelyVisibleItemPositions(IntArray(it.spanCount))
-                        Timber.d("lastVisibleItemPositions ${lastVisibleItemPositions[0]},${lastVisibleItemPositions[1]} ")
-                        Timber.d("spanCount ${it.spanCount} ")
-
-                        val endOfList = lastVisibleItemPositions[0] + 1 >= totalItemCount || lastVisibleItemPositions[1] + 1 >= totalItemCount
-
-                        if (photoViewModel.isLoading.value != true && endOfList) {
-                            pageNumber += 1
-                            photoViewModel.getUnsplashPhotosRequest(pageNumber)
-                        }
-                    }
-                }
-            })
+            addOnScrollListener(PaginationScrollListener(photoViewModel))
         }
 
-
+        scrollToSelectedPhoto()
 
 
         return viewBinding.root
     }
+
+    private fun scrollToSelectedPhoto() {
+
+        viewBinding.unsplashPhotoList.scrollToPosition(photoViewModel.selectedPosition() ?: 0)
+    }
+
 
 
     override fun onStart() {
