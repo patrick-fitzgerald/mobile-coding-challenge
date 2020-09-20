@@ -23,17 +23,37 @@
 
             />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/unsplash_photo_list"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/list_item_unsplash_photo"
-            tools:visibility="visible"
-            />
+            app:visible_if="@{!photoViewModel.isLoading}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/unsplash_photo_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@id/listview_progress_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/list_item_unsplash_photo"
+                tools:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/listview_progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_item_height"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/grey"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/unsplash_photo_list"
+                app:visible_if="@{photoViewModel.listViewIsLoading}"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.data.response.UnsplashPhoto
-import com.example.databinding.ItemPhotoBinding
+import com.example.databinding.PagerItemPhotoBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,7 +43,7 @@ class PhotoViewPagerAdapter :
         return ItemViewHolder.from(parent)
     }
 
-    class ItemViewHolder private constructor(private val binding: ItemPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ItemViewHolder private constructor(private val binding: PagerItemPhotoBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: UnsplashPhoto) {
             binding.unsplashPhoto = item
@@ -53,7 +53,7 @@ class PhotoViewPagerAdapter :
         companion object {
             fun from(parent: ViewGroup): ItemViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemPhotoBinding.inflate(layoutInflater, parent, false)
+                val binding = PagerItemPhotoBinding.inflate(layoutInflater, parent, false)
                 return ItemViewHolder(binding)
             }
         }

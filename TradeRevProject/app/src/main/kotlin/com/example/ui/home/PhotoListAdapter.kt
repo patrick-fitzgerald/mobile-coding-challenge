@@ -3,24 +3,21 @@ package com.example.ui.home
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.data.response.UnsplashPhoto
-import com.example.databinding.ListItemLoadingBinding
 import com.example.databinding.ListItemUnsplashPhotoBinding
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class PhotoClickListener(val clickListener: (unsplashPhoto: UnsplashPhoto) -> Unit) {
     fun onClick(unsplashPhoto: UnsplashPhoto) = clickListener(unsplashPhoto)
 }
-
-private const val ITEM_VIEW_TYPE_LOADING = 0
-private const val ITEM_VIEW_TYPE_ITEM = 1
 
 data class PhotoListData(
     val isLoading: Boolean?,
@@ -37,7 +34,7 @@ class PhotoListAdapter(private val clickListener: PhotoClickListener) :
 
             var items: List<DataItem> = emptyList()
             if (unsplashPhotos != null) {
-                items = items + unsplashPhotos.map { DataItem.UnsplashPhotoItem(it) } + DataItem.LoadingItem()
+                items = items + unsplashPhotos.map { DataItem.UnsplashPhotoItem(it) }
             }
 
             withContext(Dispatchers.Main) {
@@ -47,6 +44,7 @@ class PhotoListAdapter(private val clickListener: PhotoClickListener) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
         when (holder) {
             is ItemViewHolder -> {
                 val unsplashPhotoItem = getItem(position) as DataItem.UnsplashPhotoItem
@@ -56,26 +54,30 @@ class PhotoListAdapter(private val clickListener: PhotoClickListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            ITEM_VIEW_TYPE_LOADING -> LoadingViewHolder.from(parent)
-            ITEM_VIEW_TYPE_ITEM -> ItemViewHolder.from(parent)
-            else -> throw ClassCastException("Unknown viewType $viewType")
-        }
+        return ItemViewHolder.from(parent)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)) {
-            is DataItem.LoadingItem -> ITEM_VIEW_TYPE_LOADING
-            is DataItem.UnsplashPhotoItem -> ITEM_VIEW_TYPE_ITEM
-        }
-    }
 
     class ItemViewHolder private constructor(private val binding: ListItemUnsplashPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        // Set Aspect Ratio in Staggered LayoutManager using Constraint Layout
+        // https://medium.com/mindorks/aspect-ratio-in-staggered-layoutmanager-using-constraint-layout-9845d04d1962
+        private val set = ConstraintSet()
+
+
         fun bind(item: UnsplashPhoto, clickListener: PhotoClickListener) {
             binding.unsplashPhoto = item
             binding.clickListener = clickListener
+            val thumbnailUrl = item.thumbnailUrl()
+            if (thumbnailUrl.isNotEmpty()) {
+                Picasso.get().load(thumbnailUrl).into(binding.photoThumbnail)
+                val ratio = String.format("%d:%d", item.width, item.height)
+                set.clone(binding.photoThumbnailContainer)
+                set.setDimensionRatio(binding.photoThumbnail.id, ratio)
+                set.applyTo(binding.photoThumbnailContainer)
+            }
+
             binding.executePendingBindings()
         }
 
@@ -88,18 +90,6 @@ class PhotoListAdapter(private val clickListener: PhotoClickListener) :
         }
     }
 
-    class LoadingViewHolder private constructor(binding: ListItemLoadingBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-
-        companion object {
-            fun from(parent: ViewGroup): LoadingViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemLoadingBinding.inflate(layoutInflater, parent, false)
-                return LoadingViewHolder(binding)
-            }
-        }
-    }
 
 }
 
@@ -119,9 +109,6 @@ sealed class DataItem {
         override val id = unsplashPhoto.id
     }
 
-    class LoadingItem : DataItem() {
-        override val id = "loading"
-    }
 
     abstract val id: String
 }

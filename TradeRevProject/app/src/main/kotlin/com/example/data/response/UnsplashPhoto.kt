@@ -18,15 +18,15 @@ data class UnsplashPhoto(
         return ""
     }
 
-    fun fullUrl(): String {
+    fun regularUrl(): String {
         urls?.let {
-            return it.thumb
+            return it.regular
         }
         return ""
     }
 }
 
 data class UnsplashPhotoUrl(
-    val full: String = "",
+    val regular: String = "",
     val thumb: String = ""
 )

@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.R
 import com.example.data.response.UnsplashPhoto
 import com.example.databinding.FragmentHomeBinding
@@ -18,6 +20,7 @@ import io.reactivex.rxkotlin.addTo
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+
 
 class HomeFragment : BaseFragment() {
 
@@ -35,20 +38,31 @@ class HomeFragment : BaseFragment() {
         navigateToPhotoFragment()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.d("onCreate")
+        // Make initial request
+        photoViewModel.getUnsplashPhotosRequest(pageNumber)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        Timber.d("onCreateView")
+
         viewBinding = FragmentHomeBinding.inflate(inflater, container, false)
         viewBinding.photoViewModel = photoViewModel
         viewBinding.lifecycleOwner = this
 
-        viewLayoutManager = LinearLayoutManager(context)
+        viewLayoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         viewListAdapter = PhotoListAdapter(photoClickListener)
 
         viewBinding.unsplashPhotoList.apply {
+
             setHasFixedSize(true)
             layoutManager = viewLayoutManager
             adapter = viewListAdapter
@@ -56,16 +70,18 @@ class HomeFragment : BaseFragment() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
 
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                    val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager?
 
                     layoutManager?.let {
                         val totalItemCount = it.itemCount
-                        val visibleItemCount = it.childCount
+                        Timber.d("totalItemCount ${totalItemCount} ")
+                        val lastVisibleItemPositions = it.findLastCompletelyVisibleItemPositions(IntArray(it.spanCount))
+                        Timber.d("lastVisibleItemPositions ${lastVisibleItemPositions[0]},${lastVisibleItemPositions[1]} ")
+                        Timber.d("spanCount ${it.spanCount} ")
 
-                        val lastVisibleItemPosition = it.findLastVisibleItemPosition()
+                        val endOfList = lastVisibleItemPositions[0] + 1 >= totalItemCount || lastVisibleItemPositions[1] + 1 >= totalItemCount
 
-                        if (photoViewModel.isLoading.value != true && lastVisibleItemPosition + 1 >= totalItemCount) {
-                            Timber.d("makeRequest - pageNumber: $pageNumber")
+                        if (photoViewModel.isLoading.value != true && endOfList) {
                             pageNumber += 1
                             photoViewModel.getUnsplashPhotosRequest(pageNumber)
                         }
@@ -75,16 +91,17 @@ class HomeFragment : BaseFragment() {
         }
 
 
-        // Make initial request
-        photoViewModel.getUnsplashPhotosRequest(pageNumber)
+
 
         return viewBinding.root
     }
 
-    var items: List<DataItem> = emptyList()
 
     override fun onStart() {
         super.onStart()
+
+        Timber.d("onStart")
+
         subscribeToContextEvents()
 
         // unsplash photos update

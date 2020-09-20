@@ -3,6 +3,7 @@ package com.example.util.binding
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import com.example.data.response.UnsplashPhoto
 import com.squareup.picasso.Picasso
 
 @Suppress("unused")
@@ -21,4 +22,5 @@ object BindingAdapters {
             Picasso.get().load(imageUrl).into(imageView)
         }
     }
+
 }

@@ -16,6 +16,7 @@ import timber.log.Timber
 class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseViewModel() {
 
     val isLoading = MutableLiveData<Boolean>().default(true)
+    val listViewIsLoading = MutableLiveData<Boolean>().default(false)
     val unsplashPhotos = MutableLiveData<List<UnsplashPhoto>>()
 
     // MediatorLiveData to combine two MutableLiveData objects
@@ -41,8 +42,9 @@ class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseV
     // Sample HTTP request
     fun getUnsplashPhotosRequest(pageNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            isLoading.postValue(true)
+            listViewIsLoading.postValue(true)
             val response = unsplashRepository.getPhotos(pageNumber = pageNumber)
+            listViewIsLoading.postValue(false)
             isLoading.postValue(false)
             viewModelScope.launch(Dispatchers.Main) {
                 when (response.status) {
