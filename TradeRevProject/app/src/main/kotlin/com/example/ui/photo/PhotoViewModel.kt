@@ -15,11 +15,24 @@ import timber.log.Timber
 
 class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseViewModel() {
 
+    /**
+     * Displays spinner when the first page is loading.
+     */
     val isLoading = MutableLiveData<Boolean>().default(true)
+
+    /**
+     * Displays list view spinner at the bottom of the view when the next page of photos is loading.
+     */
     val listViewIsLoading = MutableLiveData<Boolean>().default(false)
+
+    /**
+     * Unsplash photos.
+     */
     val unsplashPhotos = MutableLiveData<List<UnsplashPhoto>>()
 
-    // MediatorLiveData to combine two MutableLiveData objects
+    /**
+     * MediatorLiveData to combine two MutableLiveData objects: isLoading + unsplashPhotos.
+     */
     val photoListData = MediatorLiveData<PhotoListData>()
 
     init {
@@ -32,7 +45,13 @@ class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseV
     }
 
 
+    /**
+     * A user selects a photo when they click on a photo in the list of photos.
+     */
     val selectedPhoto = MutableLiveData<UnsplashPhoto>()
+    /**
+     * A can scroll to a photo by paging in the photo viewer.
+     */
     val scrolledToPhoto = MutableLiveData<UnsplashPhoto>()
 
 
@@ -44,7 +63,7 @@ class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseV
         return unsplashPhotos.value?.indexOf(scrolledToPhoto.value)
     }
 
-    // Sample HTTP request
+    // Request Photos from the Unsplash API
     fun getUnsplashPhotosRequest(pageNumber: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             listViewIsLoading.postValue(true)

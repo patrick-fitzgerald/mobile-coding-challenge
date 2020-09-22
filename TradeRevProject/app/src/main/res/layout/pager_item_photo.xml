@@ -21,8 +21,8 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:adjustViewBounds="true"
-            app:layout_collapseMode="parallax"
-            app:image_url="@{unsplashPhoto.regularUrl()}" />
+            app:image_url="@{unsplashPhoto.regularUrl()}"
+            app:layout_collapseMode="parallax" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

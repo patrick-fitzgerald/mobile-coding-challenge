@@ -25,7 +25,6 @@ import timber.log.Timber
 class HomeFragment : BaseFragment() {
 
     private var viewBinding by autoCleared<FragmentHomeBinding>()
-    private val homeViewModel: HomeViewModel by viewModel()
     private val photoViewModel: PhotoViewModel by sharedViewModel()
 
     private lateinit var viewLayoutManager: RecyclerView.LayoutManager
@@ -44,8 +43,7 @@ class HomeFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("onCreate")
-        // Make initial request
+        // Make Unsplash Photos initial request
         photoViewModel.getUnsplashPhotosRequest(UNSPLASH_PHOTOS_FIRST_PAGE)
     }
 
@@ -56,20 +54,17 @@ class HomeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        Timber.d("onCreateView")
-
         viewBinding = FragmentHomeBinding.inflate(inflater, container, false)
         viewBinding.photoViewModel = photoViewModel
         viewBinding.lifecycleOwner = this
 
+        // Setup Photo list RecycleView
         viewLayoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
         viewListAdapter = PhotoListAdapter(photoClickListener)
-
         viewBinding.unsplashPhotoList.apply {
-
-            setHasFixedSize(true)
             layoutManager = viewLayoutManager
             adapter = viewListAdapter
+            // pagination support
             addOnScrollListener(PaginationScrollListener(photoViewModel))
         }
 
@@ -79,53 +74,34 @@ class HomeFragment : BaseFragment() {
         return viewBinding.root
     }
 
+    // Scroll to currently selected photo
     private fun scrollToSelectedPhoto() {
-
-        val scrolledToPhotoPosition = photoViewModel.scrolledToPhotoPosition()
         val scrolledToPhoto = photoViewModel.scrolledToPhoto.value
-        if (scrolledToPhoto != null && scrolledToPhotoPosition != null) {
-            viewBinding.unsplashPhotoList.scrollToPosition(scrolledToPhotoPosition)
+        if (scrolledToPhoto != null) {
+            val scrolledToPhotoPosition = photoViewModel.scrolledToPhotoPosition()
+            if (scrolledToPhotoPosition != null) {
+                viewBinding.unsplashPhotoList.smoothScrollToPosition(scrolledToPhotoPosition)
+            }
         }
-
     }
 
 
     override fun onStart() {
         super.onStart()
 
-        Timber.d("onStart")
-
-        subscribeToContextEvents()
-
-        // unsplash photos update
+        // observe Unsplash photos updates
         photoViewModel.photoListData.observe(
             viewLifecycleOwner,
             Observer { photoListData ->
                 photoListData?.let {
                     if (it.unsplashPhotos != null) {
-                        Timber.d("submitPhotoList isLoading: false")
                         viewListAdapter.submitPhotoList(it.unsplashPhotos)
                     }
-//                    if (it.isLoading != null) {
-//                        Timber.d("submitPhotoList isLoading: true")
-//                        viewListAdapter.submitPhotoList(it.unsplashPhotos, true)
-//                    }
                 }
             }
         )
     }
 
-    private fun subscribeToContextEvents() {
-        // context events
-        homeViewModel.contextEventBus.subscribe { contextEvent ->
-            context?.let {
-                when (contextEvent) {
-                    HomeViewModel.ContextEvent.SCROLL_NEXT_PAGE_EVENT -> Timber.d("HomeFragment - scroll next page event")
-                    else -> Unit
-                }
-            }
-        }.addTo(compositeDisposable)
-    }
 
     private fun navigateToPhotoFragment(extras: Navigator.Extras) {
 

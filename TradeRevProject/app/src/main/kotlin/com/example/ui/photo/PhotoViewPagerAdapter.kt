@@ -8,7 +8,9 @@ import androidx.viewpager.widget.PagerAdapter
 import com.example.data.response.UnsplashPhoto
 import com.example.databinding.PagerItemPhotoBinding
 
-
+/**
+ * Provides a view pager for the full screen photo viewer
+ */
 class PhotoViewPagerAdapter(private val list: List<UnsplashPhoto>) :
     PagerAdapter() {
 

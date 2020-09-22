@@ -5,7 +5,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.ui.photo.PhotoViewModel
 import com.example.util.Constants.Companion.UNSPLASH_PHOTOS_FIRST_PAGE
 
-class PaginationScrollListener(val photoViewModel :PhotoViewModel): RecyclerView.OnScrollListener() {
+/**
+ * Provide pagination for RecyclerView containing Unsplash photos
+ */
+class PaginationScrollListener(val photoViewModel: PhotoViewModel) :
+    RecyclerView.OnScrollListener() {
 
     private var pageNumber: Int = UNSPLASH_PHOTOS_FIRST_PAGE
 
