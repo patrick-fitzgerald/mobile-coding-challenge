@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.R
-import com.example.data.response.UnsplashPhoto
 import com.example.databinding.FragmentHomeBinding
 import com.example.ui.base.BaseFragment
 import com.example.ui.photo.PhotoViewModel
@@ -30,10 +31,15 @@ class HomeFragment : BaseFragment() {
     private lateinit var viewLayoutManager: RecyclerView.LayoutManager
     private lateinit var viewListAdapter: PhotoListAdapter
 
-
-    private val photoClickListener = PhotoClickListener { unsplashPhoto: UnsplashPhoto ->
+    // https://medium.com/@j.c.moreirapinto/recyclerview-shared-transitions-in-android-navigation-architecture-component-16eb902b39ba
+    private val photoClickListener = PhotoClickListener { unsplashPhoto, imageView ->
         photoViewModel.selectedPhoto.value = unsplashPhoto
-        navigateToPhotoFragment()
+
+        val extras = FragmentNavigatorExtras(
+            imageView to unsplashPhoto.id
+        )
+
+        navigateToPhotoFragment(extras)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +81,13 @@ class HomeFragment : BaseFragment() {
 
     private fun scrollToSelectedPhoto() {
 
-        viewBinding.unsplashPhotoList.scrollToPosition(photoViewModel.selectedPosition() ?: 0)
-    }
+        val scrolledToPhotoPosition = photoViewModel.scrolledToPhotoPosition()
+        val scrolledToPhoto = photoViewModel.scrolledToPhoto.value
+        if (scrolledToPhoto != null && scrolledToPhotoPosition != null) {
+            viewBinding.unsplashPhotoList.scrollToPosition(scrolledToPhotoPosition)
+        }
 
+    }
 
 
     override fun onStart() {
@@ -117,8 +127,14 @@ class HomeFragment : BaseFragment() {
         }.addTo(compositeDisposable)
     }
 
-    private fun navigateToPhotoFragment() {
+    private fun navigateToPhotoFragment(extras: Navigator.Extras) {
+
         Timber.d("navigateToPhotoFragment")
-        findNavController().navigate(R.id.action_homeFragment_to_photoFragment)
+        findNavController().navigate(
+            R.id.action_homeFragment_to_photoFragment,
+            null, // Bundle of args
+            null, // NavOptions
+            extras
+        )
     }
 }

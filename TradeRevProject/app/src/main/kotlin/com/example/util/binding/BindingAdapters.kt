@@ -3,6 +3,7 @@ package com.example.util.binding
 import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.data.response.UnsplashPhoto
 import com.squareup.picasso.Picasso
 
@@ -19,7 +20,13 @@ object BindingAdapters {
     @BindingAdapter("image_url")
     fun setImageUrl(imageView: ImageView, imageUrl: String) {
         if (!imageUrl.isBlank()) {
-            Picasso.get().load(imageUrl).into(imageView)
+            val circularProgressDrawable = CircularProgressDrawable(imageView.context)
+            circularProgressDrawable.apply {
+                strokeWidth = 8f
+                centerRadius = 60f
+                start()
+            }
+            Picasso.get().load(imageUrl).placeholder(circularProgressDrawable).into(imageView)
         }
     }
 

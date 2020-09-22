@@ -33,10 +33,15 @@ class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseV
 
 
     val selectedPhoto = MutableLiveData<UnsplashPhoto>()
+    val scrolledToPhoto = MutableLiveData<UnsplashPhoto>()
 
 
-    fun selectedPosition(): Int? {
+    fun selectedPhotoPosition(): Int? {
         return unsplashPhotos.value?.indexOf(selectedPhoto.value)
+    }
+
+    fun scrolledToPhotoPosition(): Int? {
+        return unsplashPhotos.value?.indexOf(scrolledToPhoto.value)
     }
 
     // Sample HTTP request

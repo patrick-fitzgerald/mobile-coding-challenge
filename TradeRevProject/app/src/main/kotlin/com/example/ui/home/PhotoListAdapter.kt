@@ -3,6 +3,7 @@ package com.example.ui.home
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,8 +16,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PhotoClickListener(val clickListener: (unsplashPhoto: UnsplashPhoto) -> Unit) {
-    fun onClick(unsplashPhoto: UnsplashPhoto) = clickListener(unsplashPhoto)
+class PhotoClickListener(val clickListener: (unsplashPhoto: UnsplashPhoto, imageView: ImageView) -> Unit) {
+    fun onClick(unsplashPhoto: UnsplashPhoto, imageView: ImageView) =
+        clickListener(unsplashPhoto, imageView)
 }
 
 data class PhotoListData(
@@ -61,17 +63,28 @@ class PhotoListAdapter(private val clickListener: PhotoClickListener) :
     class ItemViewHolder private constructor(private val binding: ListItemUnsplashPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        // Set Aspect Ratio in Staggered LayoutManager using Constraint Layout
-        // https://medium.com/mindorks/aspect-ratio-in-staggered-layoutmanager-using-constraint-layout-9845d04d1962
         private val set = ConstraintSet()
-
 
         fun bind(item: UnsplashPhoto, clickListener: PhotoClickListener) {
             binding.unsplashPhoto = item
-            binding.clickListener = clickListener
+
+            // Set imageView transition name
+            binding.photoThumbnail.apply {
+                transitionName = item.id
+            }
+
+            // set photo click listener
+            binding.photoThumbnailContainer.setOnClickListener {
+                clickListener.onClick(item, binding.photoThumbnail)
+            }
+
+            // Load thumbnail into ImageView
             val thumbnailUrl = item.thumbnailUrl()
             if (thumbnailUrl.isNotEmpty()) {
                 Picasso.get().load(thumbnailUrl).into(binding.photoThumbnail)
+
+                // Set Aspect Ratio using Constraint Layout
+                // Source: https://medium.com/mindorks/aspect-ratio-in-staggered-layoutmanager-using-constraint-layout-9845d04d1962
                 val ratio = String.format("%d:%d", item.width, item.height)
                 set.clone(binding.photoThumbnailContainer)
                 set.setDimensionRatio(binding.photoThumbnail.id, ratio)
