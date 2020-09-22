@@ -44,7 +44,6 @@ class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseV
         }
     }
 
-
     /**
      * A user selects a photo when they click on a photo in the list of photos.
      */
@@ -53,7 +52,6 @@ class PhotoViewModel(private val unsplashRepository: UnsplashRepository) : BaseV
      * A can scroll to a photo by paging in the photo viewer.
      */
     val scrolledToPhoto = MutableLiveData<UnsplashPhoto>()
-
 
     fun selectedPhotoPosition(): Int? {
         return unsplashPhotos.value?.indexOf(selectedPhoto.value)

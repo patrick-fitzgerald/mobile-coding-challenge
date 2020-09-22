@@ -11,8 +11,6 @@ import com.example.databinding.FragmentPhotoBinding
 import com.example.ui.base.BaseFragment
 import com.example.util.autoCleared
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
-
 
 class PhotoFragment : BaseFragment() {
 
@@ -26,7 +24,6 @@ class PhotoFragment : BaseFragment() {
         sharedElementEnterTransition =
             TransitionInflater.from(context).inflateTransition(android.R.transition.move)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,7 +60,7 @@ class PhotoFragment : BaseFragment() {
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {
-                    if(state == SCROLL_STATE_IDLE){
+                    if (state == SCROLL_STATE_IDLE) {
                         // Update scrolledToPhoto on page scroll
                         photoViewModel.scrolledToPhoto.value = photoViewModel.unsplashPhotos.value?.get(viewPagerPosition)
                     }
@@ -73,5 +70,4 @@ class PhotoFragment : BaseFragment() {
 
         return viewBinding.root
     }
-
 }

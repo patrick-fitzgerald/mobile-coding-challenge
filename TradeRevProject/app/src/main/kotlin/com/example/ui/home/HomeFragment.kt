@@ -16,11 +16,8 @@ import com.example.ui.base.BaseFragment
 import com.example.ui.photo.PhotoViewModel
 import com.example.util.Constants.Companion.UNSPLASH_PHOTOS_FIRST_PAGE
 import com.example.util.autoCleared
-import io.reactivex.rxkotlin.addTo
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-
 
 class HomeFragment : BaseFragment() {
 
@@ -47,7 +44,6 @@ class HomeFragment : BaseFragment() {
         photoViewModel.getUnsplashPhotosRequest(UNSPLASH_PHOTOS_FIRST_PAGE)
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -70,7 +66,6 @@ class HomeFragment : BaseFragment() {
 
         scrollToSelectedPhoto()
 
-
         return viewBinding.root
     }
 
@@ -84,7 +79,6 @@ class HomeFragment : BaseFragment() {
             }
         }
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -101,7 +95,6 @@ class HomeFragment : BaseFragment() {
             }
         )
     }
-
 
     private fun navigateToPhotoFragment(extras: Navigator.Extras) {
 

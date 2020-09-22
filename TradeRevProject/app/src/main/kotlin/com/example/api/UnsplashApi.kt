@@ -9,5 +9,3 @@ interface UnsplashApi {
     @GET("photos")
     suspend fun photos(@Query("page") pageNumber: String, @Query("per_page") perPage: String): List<UnsplashPhoto>
 }
-
-

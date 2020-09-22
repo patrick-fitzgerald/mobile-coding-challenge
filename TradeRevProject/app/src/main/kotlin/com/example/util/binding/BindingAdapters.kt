@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.example.data.response.UnsplashPhoto
 import com.squareup.picasso.Picasso
 
 @Suppress("unused")
@@ -29,5 +28,4 @@ object BindingAdapters {
             Picasso.get().load(imageUrl).placeholder(circularProgressDrawable).into(imageView)
         }
     }
-
 }

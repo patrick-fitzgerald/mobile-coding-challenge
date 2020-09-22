@@ -59,7 +59,6 @@ class PhotoListAdapter(private val clickListener: PhotoClickListener) :
         return ItemViewHolder.from(parent)
     }
 
-
     class ItemViewHolder private constructor(private val binding: ListItemUnsplashPhotoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -102,8 +101,6 @@ class PhotoListAdapter(private val clickListener: PhotoClickListener) :
             }
         }
     }
-
-
 }
 
 class UnsplashPhotoDiffCallback : DiffUtil.ItemCallback<DataItem>() {
@@ -121,7 +118,6 @@ sealed class DataItem {
     data class UnsplashPhotoItem(val unsplashPhoto: UnsplashPhoto) : DataItem() {
         override val id = unsplashPhoto.id
     }
-
 
     abstract val id: String
 }

@@ -1,6 +1,5 @@
 package com.example.util
 
-
 class Constants {
 
     companion object {
